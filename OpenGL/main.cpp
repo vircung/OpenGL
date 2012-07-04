@@ -96,18 +96,34 @@ std::string getSpecialKeyString(int key){
 
 
 void specialKey(int key, int x, int y){
+	/* UWAGA !! 
+	   Prawy alt interpretowany jest jako kombinacja PRAWY ALT _i_ LEWY CTRL.
+	   Poni¿sza instrukcja ogranicza jego interpretacjê tylko do LEWY CTRL
+	*/
+	if(key == GLUT_KEY_RALT){
+		return;
+	}1
+
 	std::string _key = getSpecialKeyString(key);
 	specialKeys[key] = true;
 
-	std::clog << "Nacisnieo klawisz " << _key.c_str() <<" kod "<< key << "\n";
+	std::clog << "Nacisnieo klawisz specjalny " << _key.c_str() <<" kod " << key << "\n";
 	glutPostRedisplay();
 }
 
 void specialKeyUp(int key, int x, int y){
+	/* UWAGA !! 
+	   Prawy alt interpretowany jest jako kombinacja PRAWY ALT _i_ LEWY CTRL.
+	   Poni¿sza instrukcja ogranicza jego interpretacjê tylko do LEWY CTRL
+	*/
+	if(key == GLUT_KEY_RALT){
+		return;
+	}
+
 	std::string _key = getSpecialKeyString(key);
 	specialKeys[key] = false;
 
-	std::clog << "Zwolniono klawisz " << _key.c_str() <<" kod "<< key << "\n";
+	std::clog << "Zwolniono klawisz specjalny " << _key.c_str() <<" kod " << key << "\n";
 	glutPostRedisplay();
 }
 
@@ -120,7 +136,7 @@ void keyFunc(unsigned char key, int x, int y){
 
 	switch(key) {
 	default:
-		std::clog << "Nacisnieo klawisz " << (char)key <<" kod "<< (int)key << "\n";
+		std::clog << "Nacisnieo klawisz " << (char)key <<" kod " << (int)key << "\n";
 		break;
 	}
 	glutPostRedisplay();
@@ -135,7 +151,7 @@ void keyUpFunc(unsigned char key, int x, int y){
 
 	switch(key) {
 	default:
-		std::clog << "Zwoniono klawisz " << (char)key <<" kod "<< (int)key << "\n";
+		std::clog << "Zwoniono klawisz " << (char)key <<" kod " << std::hex << (int)key << "\n";
 		break;
 	}
 	glutPostRedisplay();
