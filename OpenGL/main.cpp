@@ -1,14 +1,26 @@
 #include <GL\freeglut.h>
 #include <iostream>
 
+#define  GLUT_KEY_LSHIFT    0x0070
+#define  GLUT_KEY_RSHIFT    0x0071
+#define  GLUT_KEY_LCTRL     0x0072
+#define  GLUT_KEY_RCTRL     0x0073
+#define  GLUT_KEY_LALT      0x0074
+#define  GLUT_KEY_RALT      0x0075
+
+bool* keys = new bool[255]();
+bool* specialKeys = new bool[128]();
+
 void display(void){
 	glClear(GL_COLOR_BUFFER_BIT);
-
-    glBegin(GL_TRIANGLES);
-	    glColor3f(1.0, 0.0, 0.0); glVertex3f(0.0, 0.0, 0.0);
-	    glColor3f(0.0, 1.0, 0.0); glVertex3f(1.0, 0.0, 0.0);
-	    glColor3f(0.0, 0.0, 1.0); glVertex3f(0.5, 1.0, 0.0);
-    glEnd();
+	
+	if (specialKeys[0x70] && specialKeys[0x72] && specialKeys[0x74] ){
+		glBegin(GL_TRIANGLES);
+			glColor3f(1.0, 0.0, 0.0); glVertex3f(0.0, 0.0, 0.0);
+			glColor3f(0.0, 1.0, 0.0); glVertex3f(1.0, 0.0, 0.0);
+			glColor3f(0.0, 0.0, 1.0); glVertex3f(0.5, 1.0, 0.0);
+		glEnd();
+	}
 
 	glFlush();
 }
@@ -65,17 +77,17 @@ std::string getSpecialKeyString(int key){
 		return "DOWN";
 	case GLUT_KEY_INSERT:
 		return "INSERT";
-	case 0x70:
+	case GLUT_KEY_LSHIFT:
 		return "LEFT SHIFT";
-	case 0x71:
+	case GLUT_KEY_RSHIFT:
 		return "RIGHT SHIFT";
-	case 0x72:
+	case GLUT_KEY_LCTRL:
 		return "LEFT CTRL";
-	case 0x73:
+	case GLUT_KEY_RCTRL:
 		return "RIGHT CTRL";
-	case 0x74:
+	case GLUT_KEY_LALT:
 		return "LEFT ALT";
-	case 0x75:
+	case GLUT_KEY_RALT:
 		return "RIGHT ALT";
 	default:
 		return "UNKNOWN";
@@ -85,15 +97,18 @@ std::string getSpecialKeyString(int key){
 
 void specialKey(int key, int x, int y){
 	std::string _key = getSpecialKeyString(key);
+	specialKeys[key] = true;
 
 	std::clog << "Nacisnieo klawisz " << _key.c_str() <<" kod "<< key << "\n";
-
+	glutPostRedisplay();
 }
 
 void specialKeyUp(int key, int x, int y){
 	std::string _key = getSpecialKeyString(key);
+	specialKeys[key] = false;
 
 	std::clog << "Zwolniono klawisz " << _key.c_str() <<" kod "<< key << "\n";
+	glutPostRedisplay();
 }
 
 void keyFunc(unsigned char key, int x, int y){
@@ -101,25 +116,29 @@ void keyFunc(unsigned char key, int x, int y){
 	if (key == 16 ||key == 17 || key == 18)
 		return;
 
-	switch(key) {
+	keys[key] = true;
 
+	switch(key) {
 	default:
 		std::clog << "Nacisnieo klawisz " << (char)key <<" kod "<< (int)key << "\n";
 		break;
 	}
+	glutPostRedisplay();
 } 
 
 void keyUpFunc(unsigned char key, int x, int y){
 
-		if (key == 16 ||key == 17 || key == 18)
-		return;
+	if (key == 16 ||key == 17 || key == 18)
+	return;
+
+	keys[key] = false;
 
 	switch(key) {
-
 	default:
 		std::clog << "Zwoniono klawisz " << (char)key <<" kod "<< (int)key << "\n";
 		break;
 	}
+	glutPostRedisplay();
 }
 
 int main(int argc, char* argv[]){
@@ -135,5 +154,8 @@ int main(int argc, char* argv[]){
 	glutSpecialFunc(specialKey);
 	glutSpecialUpFunc(specialKeyUp);
     glutMainLoop();
+
+	delete[] keys;
+	delete[] specialKeys;
     return 0;
 }
