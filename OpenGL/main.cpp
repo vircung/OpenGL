@@ -1,5 +1,6 @@
 #include <GL\freeglut.h>
 #include <iostream>
+#include <vector>
 
 #define  GLUT_KEY_LSHIFT    0x0070
 #define  GLUT_KEY_RSHIFT    0x0071
@@ -8,8 +9,8 @@
 #define  GLUT_KEY_LALT      0x0074
 #define  GLUT_KEY_RALT      0x0075
 
-bool* keys = new bool[255]();
-bool* specialKeys = new bool[128]();
+std::vector<bool> keys(255,0);
+std::vector<bool> specialKeys(128,0);
 
 void display(void){
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -31,6 +32,7 @@ void init(void){
 	glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
+
 }
 
 std::string getSpecialKeyString(int key){
@@ -102,7 +104,7 @@ void specialKey(int key, int x, int y){
 	*/
 	if(key == GLUT_KEY_RALT){
 		return;
-	}1
+	}
 
 	std::string _key = getSpecialKeyString(key);
 	specialKeys[key] = true;
@@ -171,7 +173,6 @@ int main(int argc, char* argv[]){
 	glutSpecialUpFunc(specialKeyUp);
     glutMainLoop();
 
-	delete[] keys;
-	delete[] specialKeys;
+
     return 0;
 }
